@@ -3,6 +3,7 @@ package com.example.kafka.producer;
 import com.example.kafka.commons.weather.WeatherResponse;
 import com.example.kafka.weather.WeatherAPIClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -18,12 +19,14 @@ public class WeatherProducer {
 
   private final KafkaTemplate<String, WeatherResponse> kafkaTemplate;
   private final WeatherAPIClient client;
-
+  private final ElasticsearchOperations elasticsearchOperations;
   public WeatherProducer(
-      KafkaTemplate<String, WeatherResponse> kafkaTemplate,
-      WeatherAPIClient client) {
+          KafkaTemplate<String, WeatherResponse> kafkaTemplate,
+          WeatherAPIClient client,
+          ElasticsearchOperations elasticsearchOperations) {
     this.kafkaTemplate = kafkaTemplate;
     this.client = client;
+    this.elasticsearchOperations = elasticsearchOperations;
   }
 
   @Scheduled(cron = "${weather.refresh.cron}")
@@ -34,6 +37,7 @@ public class WeatherProducer {
             .setHeader(KafkaHeaders.TOPIC, WEATHER_TOPIC_NAME)
             .build();
     kafkaTemplate.send(message);
+    elasticsearchOperations.save(response);
     log.info("Message sent {}", message);
   }
 }

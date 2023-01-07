@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @Component
 public class WeatherAPIClient {
@@ -17,7 +19,10 @@ public class WeatherAPIClient {
   private RestTemplate restTemplate;
 
   public WeatherResponse getCurrent(){
-    return restTemplate.getForEntity(BASE_URL + CURRENT_WEATHER_URL_SUFFIX + "?key={key}&q={q}", WeatherResponse.class, Map.of("key", API_KEY, "q", "PH337JQ")).getBody();
+    final WeatherResponse weatherResponse = restTemplate.getForEntity(BASE_URL + CURRENT_WEATHER_URL_SUFFIX + "?key={key}&q={q}", WeatherResponse.class, Map.of("key", API_KEY, "q", "PH337JQ")).getBody();
+    Objects.requireNonNull(weatherResponse)
+            .setId(UUID.randomUUID());
+    return weatherResponse;
   }
 
   public String getCurrentAsString(){

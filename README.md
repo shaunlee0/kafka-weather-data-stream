@@ -17,6 +17,15 @@ bin/kafka-server-start.sh config/server.properties
 ./kafka-console-consumer.sh --topic weather-data --bootstrap-server localhost:9092 --from-beginning
 ```
 
+### Start Elasticsearch
+
+Run the docker image. 
+
+```bash
+/usr/local/bin/docker-compose -f /Users/shaun/dev/java/docker-services/elastic.yml up -d
+```
+
+
 ## Weather API 
 
 This application reads data from the [Weather API](https://www.weatherapi.com/api-explorer.aspx#current)

@@ -20,3 +20,6 @@ weather:
   refresh:
 #    cron: "0 0/15 * * * ?" # Every X minutes
     cron: "20 * * * * ?" # Every X seconds
+
+elasticsearch:
+  url: "http://localhost:9200"
